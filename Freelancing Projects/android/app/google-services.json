@@ -1,0 +1,68 @@
+{
+  "project_info": {
+    "project_number": "630029205799",
+    "project_id": "sholic064",
+    "storage_bucket": "sholic064.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:630029205799:android:bf9697649f095ad42a2902",
+        "android_client_info": {
+          "package_name": "com.example.searchanddb"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "630029205799-r0e05cufg3to9ro4lj1psntjis80b379.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAmFHvcRS5Mh0eZiOdZjWluQ2g-pCi-StQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "630029205799-r0e05cufg3to9ro4lj1psntjis80b379.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:630029205799:android:241e4dc25cf6e75f2a2902",
+        "android_client_info": {
+          "package_name": "com.example.sholic_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "630029205799-r0e05cufg3to9ro4lj1psntjis80b379.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAmFHvcRS5Mh0eZiOdZjWluQ2g-pCi-StQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "630029205799-r0e05cufg3to9ro4lj1psntjis80b379.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
