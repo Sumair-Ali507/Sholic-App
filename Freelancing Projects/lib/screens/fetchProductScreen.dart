@@ -28,39 +28,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
           ),
         ],
       ),
-      drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: <Widget>[
-            DrawerHeader(
-              decoration: BoxDecoration(
-                color: Colors.teal,
-              ),
-              child: Center(
-                child: Text(
-                  'Menu',
-                  style: TextStyle(
-                    fontSize: 24,
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            ),
-            ListTile(
-              leading: Icon(Icons.shopping_cart, color: Colors.teal),
-              title: Text('Buy List'),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => BuyListScreen()),
-                );
-              },
-            ),
-            // Add other menu items here
-          ],
-        ),
-      ),
+
       body: Column(
         children: [
           Padding(

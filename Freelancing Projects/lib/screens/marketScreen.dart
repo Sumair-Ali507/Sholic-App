@@ -31,7 +31,7 @@ class _MarketsScreenState extends State<MarketsScreen> {
           ),
         ],
       ),
-      drawer: _buildDrawer(context),
+
       body: Column(
         children: [
           _buildSearchBar(),
@@ -106,48 +106,7 @@ class _MarketsScreenState extends State<MarketsScreen> {
     );
   }
 
-  Widget _buildDrawer(BuildContext context) {
-    return Drawer(
-      child: Column(
-        children: [
-          DrawerHeader(
-            decoration: BoxDecoration(color: Colors.teal),
-            child: Row(
-              children: [
-                Icon(Icons.store, size: 60, color: Colors.white),
-                SizedBox(width: 16),
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Sholic App',
-                      style: TextStyle(color: Colors.white, fontSize: 24),
-                    ),
-                    Text(
-                      'Explore your markets',
-                      style: TextStyle(color: Colors.white70),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-          ListTile(
-            leading: Icon(Icons.home, color: Colors.teal),
-            title: Text('Home'),
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => HomeScreen()),
-              );
-            },
-          ),
-          // Add additional menu items here
-        ],
-      ),
-    );
-  }
+
 
   Widget _buildSearchBar() {
     return Padding(
