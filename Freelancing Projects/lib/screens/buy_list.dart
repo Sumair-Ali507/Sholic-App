@@ -17,7 +17,7 @@ class _BuyListScreenState extends State<BuyListScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Buy List'),
+        title: Text('Buy List', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
         backgroundColor: Colors.teal,
         actions: [
           IconButton(

@@ -49,7 +49,7 @@ class _ProductEnterScreenState extends State<ProductEnterScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Enter Product'),
+        title: Text('Enter Product', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
         backgroundColor: Colors.teal,
       ),
       body: SingleChildScrollView(

@@ -45,7 +45,7 @@ class _MarketDetailsScreenState extends State<MarketDetailsScreen> {
       appBar: AppBar(
         title: Text(
           'Market Details',
-          style: TextStyle(fontWeight: FontWeight.bold),
+          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
         ),
         backgroundColor: Colors.teal,
       ),
@@ -76,27 +76,8 @@ class _MarketDetailsScreenState extends State<MarketDetailsScreen> {
                 icon: Icons.location_on,
               ),
               SizedBox(height: 24),
-              ElevatedButton.icon(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.teal,
-                  minimumSize: Size(double.infinity, 50),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => ProductEnterScreen()),
-                  );
-                },
-                icon: Icon(Icons.inventory, color: Colors.white),
-                label: Text(
-                  'Add/View Products',
-                  style: TextStyle(fontSize: 16),
-                ),
-              ),
-              SizedBox(height: 24),
+
+
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [

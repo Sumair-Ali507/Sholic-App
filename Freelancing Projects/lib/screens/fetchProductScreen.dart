@@ -17,7 +17,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Products'),
+        title: Text('Products', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
         backgroundColor: Colors.teal,
         actions: [
           IconButton(

@@ -19,7 +19,7 @@ class _MarketsScreenState extends State<MarketsScreen> {
       appBar: AppBar(
         title: Text(
           'Markets',
-          style: TextStyle(fontWeight: FontWeight.bold),
+          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
         ),
         backgroundColor: Colors.teal,
         actions: [
@@ -81,12 +81,8 @@ class _MarketsScreenState extends State<MarketsScreen> {
                         subtitle: Text('Address: ${market['address']}'),  // Fixed the field name
                         trailing: Icon(Icons.arrow_forward_ios, color: Colors.grey),
                         onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => MarketDetailsScreen(),
-                            ),
-                          );
+                        //Nothing to do here
+
                         },
                       ),
                     );

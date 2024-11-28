@@ -16,7 +16,7 @@ class _TagScreenState extends State<TagScreen> {
       appBar: AppBar(
         title: Text(
           'Tags',
-          style: TextStyle(fontWeight: FontWeight.bold),
+          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
         ),
         backgroundColor: Colors.teal,
         elevation: 4.0,
