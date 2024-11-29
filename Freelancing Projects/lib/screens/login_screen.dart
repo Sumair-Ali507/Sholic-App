@@ -21,13 +21,14 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void _checkIfLoggedIn() async {
-    // Check if a user is already logged in
     User? user = _auth.currentUser;
     if (user != null) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => HomeScreen()),
-      );
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => HomeScreen()),
+        );
+      });
     }
   }
 

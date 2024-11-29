@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:sholic_app/screens/productScreen.dart';
-import 'buy_list.dart';
-import 'homeScreen.dart';
 
 class ProductsScreen extends StatefulWidget {
   @override
@@ -17,18 +14,12 @@ class _ProductsScreenState extends State<ProductsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Products', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
+        title: Text(
+          'Products',
+          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+        ),
         backgroundColor: Colors.teal,
-        actions: [
-          IconButton(
-            icon: Icon(Icons.menu),
-            onPressed: () {
-              Scaffold.of(context).openDrawer();
-            },
-          ),
-        ],
       ),
-
       body: Column(
         children: [
           Padding(
@@ -67,7 +58,9 @@ class _ProductsScreenState extends State<ProductsScreen> {
             child: StreamBuilder<QuerySnapshot>(
               stream: FirebaseFirestore.instance.collection('products').snapshots(),
               builder: (context, snapshot) {
-                if (!snapshot.hasData) return Center(child: CircularProgressIndicator());
+                if (!snapshot.hasData) {
+                  return Center(child: CircularProgressIndicator());
+                }
 
                 var products = snapshot.data!.docs.where((product) {
                   var data = product.data() as Map<String, dynamic>;
@@ -96,15 +89,14 @@ class _ProductsScreenState extends State<ProductsScreen> {
                     // Check if 'tags' is a List or String
                     var tags = data['tags'];
 
-                    // If 'tags' is a String, we can display it directly, otherwise, handle it as a List
+                    // If 'tags' is a String, display it directly, otherwise handle it as a List
                     String tagsDisplay = '';
                     if (tags is String) {
-                      tagsDisplay = tags; // If it's a single string
+                      tagsDisplay = tags;
                     } else if (tags is List) {
-                      // If it's a list of strings
                       tagsDisplay = tags.isNotEmpty ? tags.join(', ') : 'No Tags Available';
                     } else {
-                      tagsDisplay = 'No Tags Available'; // In case 'tags' is not found
+                      tagsDisplay = 'No Tags Available';
                     }
 
                     // Fetching the price of the product
@@ -123,12 +115,16 @@ class _ProductsScreenState extends State<ProductsScreen> {
                           child: Icon(Icons.inventory, color: Colors.white),
                         ),
                         title: Text(
-                          data['company'] ?? 'Unknown Company',
+                          data['name'] ?? 'Unnamed Product', // Display product name
                           style: TextStyle(fontWeight: FontWeight.bold),
                         ),
                         subtitle: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
+                            Text(
+                              'Company: ${data['company'] ?? 'Unknown Company'}', // Company information
+                              style: TextStyle(color: Colors.black54),
+                            ),
                             Text(
                               'Tags: $tagsDisplay', // Show tags
                               style: TextStyle(color: Colors.black54),
@@ -138,7 +134,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
                               style: TextStyle(color: Colors.black54),
                             ),
                             Text(
-                              'price: \$${price.toString()}', // Display price
+                              'Price: \$${price.toString()}', // Display price
                               style: TextStyle(color: Colors.black54, fontWeight: FontWeight.bold),
                             ),
                           ],

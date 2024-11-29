@@ -41,8 +41,8 @@ class HomeScreen extends StatelessWidget {
                   _buildDrawerItem(
                     icon: Icons.list_alt,
                     title: 'Buy List',
-                    onTap: () {
-                      Navigator.push(
+                    onTap: ()  async {
+                     await Navigator.push(
                         context,
                         MaterialPageRoute(builder: (context) => BuyListScreen()),
                       );
@@ -51,8 +51,8 @@ class HomeScreen extends StatelessWidget {
                   _buildDrawerItem(
                     icon: Icons.shopping_cart,
                     title: 'Products',
-                    onTap: () {
-                      Navigator.push(
+                    onTap: ()  async{
+                      await Navigator.push(
                         context,
                         MaterialPageRoute(builder: (context) => ProductsScreen()),
                       );
@@ -61,8 +61,8 @@ class HomeScreen extends StatelessWidget {
                   _buildDrawerItem(
                     icon: Icons.store,
                     title: 'Markets',
-                    onTap: () {
-                      Navigator.push(
+                    onTap: () async {
+                      await Navigator.push(
                         context,
                         MaterialPageRoute(builder: (context) => MarketsScreen()),
                       );
@@ -71,8 +71,8 @@ class HomeScreen extends StatelessWidget {
                   _buildDrawerItem(
                     icon: Icons.label,
                     title: 'Tags',
-                    onTap: () {
-                      Navigator.push(
+                    onTap: () async {
+                      await Navigator.push(
                         context,
                         MaterialPageRoute(builder: (context) => TagScreen()),
                       );

@@ -29,16 +29,16 @@ class _TagSelectionScreenState extends State<TagSelectionScreen> {
     });
   }
 
-  void _addTag() async {
-    String newTag = _tagController.text.trim();
-    if (newTag.isNotEmpty && newTag.length >= 3) {
-      await FirebaseFirestore.instance.collection('tags').add({'name': newTag});
-      setState(() {
-        _availableTags.add(newTag);
-        _tagController.clear();
-      });
-    }
-  }
+  // void _addTag() async {
+  //   String newTag = _tagController.text.trim();
+  //   if (newTag.isNotEmpty && newTag.length >= 3) {
+  //     await FirebaseFirestore.instance.collection('tags').add({'name': newTag});
+  //     setState(() {
+  //       _availableTags.add(newTag);
+  //       _tagController.clear();
+  //     });
+  //   }
+  // }
 
   void _editTag(String oldTag, String newTag) async {
     QuerySnapshot snapshot = await FirebaseFirestore.instance.collection('tags').where('name', isEqualTo: oldTag).get();
@@ -65,25 +65,25 @@ class _TagSelectionScreenState extends State<TagSelectionScreen> {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            TextField(
-              controller: _tagController,
-              decoration: InputDecoration(
-                labelText: 'Enter Tag',
-                hintText: 'Add a new tag (min. 3 chars)',
-                prefixIcon: Icon(Icons.tag, color: Colors.teal),
-                suffixIcon: IconButton(
-                  icon: Icon(Icons.add, color: Colors.teal),
-                  onPressed: _addTag,
-                ),
-                filled: true,
-                fillColor: Colors.teal.withOpacity(0.1),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(16.0),
-                  borderSide: BorderSide.none,
-                ),
-              ),
-            ),
-            SizedBox(height: 16),
+            // TextField(
+            //   controller: _tagController,
+            //   decoration: InputDecoration(
+            //     labelText: 'Enter Tag',
+            //     hintText: 'Add a new tag (min. 3 chars)',
+            //     prefixIcon: Icon(Icons.tag, color: Colors.teal),
+            //     suffixIcon: IconButton(
+            //       icon: Icon(Icons.add, color: Colors.teal),
+            //       onPressed: _addTag,
+            //     ),
+            //     filled: true,
+            //     fillColor: Colors.teal.withOpacity(0.1),
+            //     border: OutlineInputBorder(
+            //       borderRadius: BorderRadius.circular(16.0),
+            //       borderSide: BorderSide.none,
+            //     ),
+            //   ),
+            // ),
+            // SizedBox(height: 16),
             Expanded(
               child: ListView.builder(
                 itemCount: _availableTags.length,

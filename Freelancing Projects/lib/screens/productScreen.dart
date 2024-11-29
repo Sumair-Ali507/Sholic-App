@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:sholic_app/screens/tagScreen.dart';
+import 'package:sholic_app/screens/productSelectionScreen.dart'; // Import Product Selection Screen
 
 class ProductEnterScreen extends StatefulWidget {
   @override
@@ -8,26 +9,32 @@ class ProductEnterScreen extends StatefulWidget {
 }
 
 class _ProductEnterScreenState extends State<ProductEnterScreen> {
+  final _productnameController = TextEditingController();
   final _companyController = TextEditingController();
   final _quantityController = TextEditingController();
-  final _priceController = TextEditingController(); // Controller for the price
+  final _priceController = TextEditingController();
   String _selectedUnit = 'kg';
   List<String> _selectedTags = [];
+  List<String> _selectedProducts = []; // List to hold selected products
 
   void _submitProduct() async {
+    String name = _productnameController.text;
     String company = _companyController.text;
     int quantity = int.parse(_quantityController.text);
     String unit = _selectedUnit;
     List<String> tags = _selectedTags;
-    double price = double.parse(_priceController.text); // Get the price as double
+    List<String> products = _selectedProducts; // Include selected products
+    double price = double.parse(_priceController.text);
 
     // Save product to Firestore
     await FirebaseFirestore.instance.collection('products').add({
+      'name': name,
       'company': company,
       'quantity': quantity,
       'unit': unit,
       'tags': tags,
-      'price': price, // Save price to Firestore
+      'price': price,
+      'linkedProducts': products, // Save selected products
     });
 
     Navigator.pop(context);
@@ -41,6 +48,18 @@ class _ProductEnterScreenState extends State<ProductEnterScreen> {
     if (selectedTags != null) {
       setState(() {
         _selectedTags = selectedTags;
+      });
+    }
+  }
+
+  void _selectProducts() async {
+    final selectedProducts = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => ProductSelectionScreen(selectedProducts: _selectedProducts)),
+    );
+    if (selectedProducts != null) {
+      setState(() {
+        _selectedProducts = selectedProducts;
       });
     }
   }
@@ -70,6 +89,20 @@ class _ProductEnterScreenState extends State<ProductEnterScreen> {
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
                     color: Colors.teal,
+                  ),
+                ),
+                SizedBox(height: 16),
+                TextField(
+                  controller: _productnameController,
+                  decoration: InputDecoration(
+                    labelText: 'Product Name',
+                    prefixIcon: Icon(Icons.business, color: Colors.teal),
+                    filled: true,
+                    fillColor: Colors.teal.withOpacity(0.05),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                      borderSide: BorderSide.none,
+                    ),
                   ),
                 ),
                 SizedBox(height: 16),
@@ -164,6 +197,35 @@ class _ProductEnterScreenState extends State<ProductEnterScreen> {
                         onDeleted: () {
                           setState(() {
                             _selectedTags.remove(tag);
+                          });
+                        },
+                      ),
+                    )
+                        .toList(),
+                  ),
+                SizedBox(height: 16),
+                ElevatedButton.icon(
+                  onPressed: _selectProducts,
+                  icon: Icon(Icons.shopping_cart, color: Colors.white),
+                  label: Text('Select Products'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.teal,
+                    foregroundColor: Colors.white,
+                    minimumSize: Size(double.infinity, 50),
+                  ),
+                ),
+                SizedBox(height: 8),
+                if (_selectedProducts.isNotEmpty)
+                  Wrap(
+                    spacing: 8,
+                    children: _selectedProducts
+                        .map(
+                          (product) => Chip(
+                        label: Text(product),
+                        deleteIcon: Icon(Icons.close),
+                        onDeleted: () {
+                          setState(() {
+                            _selectedProducts.remove(product);
                           });
                         },
                       ),

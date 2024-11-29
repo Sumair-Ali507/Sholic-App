@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:sholic_app/screens/productScreen.dart'; // Adjust the import if necessary
-import 'buy_list.dart'; // Adjust the import if necessary
-import 'homeScreen.dart'; // Adjust the import if necessary
 
 class BuyListScreen extends StatefulWidget {
   @override
@@ -17,18 +15,11 @@ class _BuyListScreenState extends State<BuyListScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Buy List', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
+        title: Text('Buy List',
+            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
         backgroundColor: Colors.teal,
-        actions: [
-          IconButton(
-            icon: Icon(Icons.menu),
-            onPressed: () {
-              Scaffold.of(context).openDrawer();
-            },
-          ),
-        ],
+        actions: [],
       ),
-
       body: Column(
         children: [
           Padding(
@@ -65,9 +56,11 @@ class _BuyListScreenState extends State<BuyListScreen> {
           ),
           Expanded(
             child: StreamBuilder<QuerySnapshot>(
-              stream: FirebaseFirestore.instance.collection('products').snapshots(),
+              stream:
+              FirebaseFirestore.instance.collection('products').snapshots(),
               builder: (context, snapshot) {
-                if (!snapshot.hasData) return Center(child: CircularProgressIndicator());
+                if (!snapshot.hasData)
+                  return Center(child: CircularProgressIndicator());
 
                 var products = snapshot.data!.docs.where((product) {
                   var data = product.data() as Map<String, dynamic>;
@@ -94,25 +87,51 @@ class _BuyListScreenState extends State<BuyListScreen> {
                     var data = product.data() as Map<String, dynamic>;
                     return Card(
                       elevation: 4,
-                      margin: EdgeInsets.symmetric(horizontal: 8.0, vertical: 6.0),
+                      margin: EdgeInsets.symmetric(
+                          horizontal: 8.0, vertical: 6.0),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(16),
                       ),
-                      child: ListTile(
-                        contentPadding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                      child: ExpansionTile(
+                        title: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              data['company'] ?? 'Unknown Company',
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                            SizedBox(height: 4),
+                            Text(
+                              data['name'] ?? 'No Product Name', // Display product name
+                              style: TextStyle(
+                                  fontSize: 14, color: Colors.grey.shade600),
+                            ),
+                          ],
+                        ),
+                        subtitle: Text(
+                          'Quantity: ${data['quantity'] ?? 'N/A'} ${data['unit'] ?? ''}',
+                        ),
                         leading: CircleAvatar(
                           backgroundColor: Colors.teal,
                           child: Icon(Icons.inventory, color: Colors.white),
                         ),
-                        title: Text(
-                          data['company'] ?? 'Unknown Company',
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                        subtitle: Text(
-                          'Tag: ${data['tags'] ?? 'N/A'}\n'
-                              'Quantity: ${data['quantity'] ?? 'N/A'} ${data['unit'] ?? ''}',
-                          style: TextStyle(color: Colors.black54),
-                        ),
+                        children: [
+                          ListTile(
+                            title: Text(
+                              'Details:',
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.teal),
+                            ),
+                            subtitle: Text(
+                              'Tag: ${data['tags'] ?? 'N/A'}\n'
+                                  'Unit: ${data['unit'] ?? 'N/A'}\n'
+                                  'Product Name: ${data['name'] ?? 'No Name'}\n' // Additional details for product name
+                                  'Other Info: ${data['other_info'] ?? 'N/A'}',
+                              style: TextStyle(color: Colors.black54),
+                            ),
+                          ),
+                        ],
                       ),
                     );
                   },

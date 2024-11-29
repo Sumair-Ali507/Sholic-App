@@ -23,12 +23,6 @@ class _MarketsScreenState extends State<MarketsScreen> {
         ),
         backgroundColor: Colors.teal,
         actions: [
-          IconButton(
-            icon: Icon(Icons.menu),
-            onPressed: () {
-              Scaffold.of(context).openDrawer();
-            },
-          ),
         ],
       ),
 

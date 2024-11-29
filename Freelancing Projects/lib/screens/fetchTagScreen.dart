@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+// Assuming you have already created AddNewTagScreen
+import 'EnterTagScreen.dart';
+
+
 class TagScreen extends StatefulWidget {
   @override
   _TagScreenState createState() => _TagScreenState();
@@ -62,6 +66,17 @@ class _TagScreenState extends State<TagScreen> {
             ),
           ),
         ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.teal,
+        onPressed: () {
+          // Navigate to AddNewTagScreen
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => AddNewTagScreen()),
+          );
+        },
+        child: Icon(Icons.add, color: Colors.white),
       ),
     );
   }
