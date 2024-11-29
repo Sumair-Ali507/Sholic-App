@@ -1,83 +1,179 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-import 'homeScreen.dart';
-import 'marketdetailsScreen.dart';
+import 'buy_list.dart';
+import 'marketDetailsScreen.dart';
 
-class MarketsScreen extends StatefulWidget {
+class MarketListScreen extends StatefulWidget {
   @override
-  _MarketsScreenState createState() => _MarketsScreenState();
+  _MarketListScreenState createState() => _MarketListScreenState();
 }
 
-class _MarketsScreenState extends State<MarketsScreen> {
-  final TextEditingController _searchController = TextEditingController();
-  String _searchQuery = '';
+class _MarketListScreenState extends State<MarketListScreen> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  TextEditingController searchController = TextEditingController();
+  String searchText = '';
+  final CollectionReference marketsRef = FirebaseFirestore.instance.collection('markets');
+
+  // Fetch markets from Firestore and filter by search text
+  Stream<QuerySnapshot> _getFilteredMarketsStream() {
+    if (searchText.isEmpty) {
+      return marketsRef.snapshots();
+    } else {
+      return marketsRef
+          .where('name', isGreaterThanOrEqualTo: searchText)
+          .where('name', isLessThanOrEqualTo: searchText + '\uf8ff')
+          .snapshots();
+    }
+  }
+
+  // Open market details screen (empty for add)
+  void _openMarketDetails({String? docId}) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => MarketDetailsScreen(docId: docId),
+      ),
+    );
+  }
+
+  // Delete market from Firestore
+  Future<void> _deleteMarket(String docId) async {
+    try {
+      await marketsRef.doc(docId).delete();
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Market deleted successfully')),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to delete market')),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
         title: Text(
           'Markets',
           style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
         ),
         backgroundColor: Colors.teal,
-        actions: [
-        ],
       ),
-
       body: Column(
         children: [
-          _buildSearchBar(),
+          // Search bar
+          Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: TextField(
+              controller: searchController,
+              decoration: InputDecoration(
+                labelText: 'Search markets',
+                labelStyle: TextStyle(color: Colors.teal),
+                prefixIcon: Icon(Icons.search, color: Colors.teal),
+                suffixIcon: searchText.isNotEmpty
+                    ? IconButton(
+                  icon: Icon(Icons.clear, color: Colors.grey),
+                  onPressed: () {
+                    setState(() {
+                      searchText = '';
+                      searchController.clear();
+                    });
+                  },
+                )
+                    : null,
+                filled: true,
+                fillColor: Colors.teal.shade50,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12.0),
+                  borderSide: BorderSide.none,
+                ),
+              ),
+              onChanged: (value) {
+                setState(() {
+                  searchText = value;
+                });
+              },
+            ),
+          ),
           Expanded(
             child: StreamBuilder<QuerySnapshot>(
-              stream: FirebaseFirestore.instance.collection('markets').snapshots(),
+              stream: _getFilteredMarketsStream(),
               builder: (context, snapshot) {
-                if (!snapshot.hasData) {
+                if (snapshot.hasError) {
+                  return Center(child: Text('Error loading markets.'));
+                }
+                if (snapshot.connectionState == ConnectionState.waiting) {
                   return Center(child: CircularProgressIndicator());
                 }
 
-                var markets = snapshot.data!.docs.where((market) {
-                  return market['name']
-                      .toString()
-                      .toLowerCase()
-                      .contains(_searchQuery.toLowerCase());
-                }).toList();
+                final data = snapshot.requireData;
 
-                if (markets.isEmpty) {
-                  return Center(
-                    child: Text(
-                      'No Markets Found',
-                      style: TextStyle(
-                        color: Colors.grey,
-                        fontSize: 18,
-                      ),
-                    ),
-                  );
+                if (data.size == 0) {
+                  return Center(child: Text('No markets found.'));
                 }
 
                 return ListView.builder(
-                  itemCount: markets.length,
+                  itemCount: data.size,
                   itemBuilder: (context, index) {
-                    var market = markets[index];
+                    var market = data.docs[index];
+                    var marketData = market.data() as Map<String, dynamic>;
+                    var products = (marketData['products'] as List<dynamic>?) ?? [];
+
                     return Card(
                       elevation: 4,
                       margin: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12.0),
-                      ),
-                      child: ListTile(
-                        leading: Icon(Icons.store, color: Colors.teal),
-                        title: Text(
-                          market['name'],
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                        subtitle: Text('Address: ${market['address']}'),  // Fixed the field name
-                        trailing: Icon(Icons.arrow_forward_ios, color: Colors.grey),
-                        onTap: () {
-                        //Nothing to do here
 
-                        },
+
+                      ),
+                      borderOnForeground: true,
+                      child: ExpansionTile(
+
+                        leading: Icon(Icons.store, color: Colors.teal), // Icon for each market
+                        title: Text(marketData['name'] ?? 'Unnamed Market'),
+                        subtitle: Text(
+                          '${marketData['address'] ?? 'Unknown Distance'} km',
+                        ),
+                        trailing: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            IconButton(
+                              icon: Icon(Icons.edit, color: Colors.teal,),
+                              onPressed: () {
+                                _openMarketDetails(docId: market.id);
+                              },
+                            ),
+                            IconButton(
+                              icon: Icon(Icons.delete,color: Colors.teal,),
+                              onPressed: () {
+                                _deleteMarket(market.id);
+                              },
+                            ),
+                          ],
+                        ),
+                        children: [
+                          // Display products with tags and prices in a list
+                          ...products.map((product) {
+                            var productData = product as Map<String, dynamic>;
+                            var tags = (productData['tags'] as List<dynamic>?) ?? [];
+                            var price = productData['price'] ?? 0.0;
+
+                            return ListTile(
+                              title: Text(productData['name'] ?? 'Unnamed Product'),
+                              subtitle: Text(
+                                '${productData['quantity']} ${productData['unit']} - ${productData['company']}\nPrice: \$${price.toStringAsFixed(2)}',
+                              ),
+                              trailing: Wrap(
+                                spacing: 6.0,
+                                children: tags.map<Widget>((tag) => Chip(label: Text(tag.toString()))).toList(),
+                              ),
+                            );
+                          }).toList(),
+                        ],
                       ),
                     );
                   },
@@ -96,44 +192,6 @@ class _MarketsScreenState extends State<MarketsScreen> {
           );
         },
         child: Icon(Icons.add, color: Colors.white),
-      ),
-    );
-  }
-
-
-
-  Widget _buildSearchBar() {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: TextField(
-        controller: _searchController,
-        decoration: InputDecoration(
-          labelText: 'Search Markets',
-          labelStyle: TextStyle(color: Colors.teal),
-          prefixIcon: Icon(Icons.search, color: Colors.teal),
-          suffixIcon: _searchController.text.isNotEmpty
-              ? IconButton(
-            icon: Icon(Icons.clear, color: Colors.grey),
-            onPressed: () {
-              setState(() {
-                _searchController.clear();
-                _searchQuery = '';
-              });
-            },
-          )
-              : null,
-          filled: true,
-          fillColor: Colors.teal.shade50,
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12.0),
-            borderSide: BorderSide.none,
-          ),
-        ),
-        onChanged: (value) {
-          setState(() {
-            _searchQuery = value;
-          });
-        },
       ),
     );
   }

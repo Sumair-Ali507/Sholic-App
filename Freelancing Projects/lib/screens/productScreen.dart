@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:sholic_app/screens/tagScreen.dart';
-import 'package:sholic_app/screens/productSelectionScreen.dart'; // Import Product Selection Screen
+import 'package:sholic_app/screens/productSelectionScreen.dart';
 
 class ProductEnterScreen extends StatefulWidget {
+  final Map<String, dynamic>? product;
+
+  ProductEnterScreen({this.product});
+
   @override
   _ProductEnterScreenState createState() => _ProductEnterScreenState();
 }
@@ -15,7 +19,22 @@ class _ProductEnterScreenState extends State<ProductEnterScreen> {
   final _priceController = TextEditingController();
   String _selectedUnit = 'kg';
   List<String> _selectedTags = [];
-  List<String> _selectedProducts = []; // List to hold selected products
+  List<String> _selectedProducts = [];
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.product != null) {
+      final product = widget.product!;
+      _productnameController.text = product['name'] ?? '';
+      _companyController.text = product['company'] ?? '';
+      _quantityController.text = product['quantity']?.toString() ?? '';
+      _priceController.text = product['price']?.toString() ?? '';
+      _selectedUnit = product['unit'] ?? 'kg';
+      _selectedTags = List<String>.from(product['tags'] ?? []);
+      _selectedProducts = List<String>.from(product['linkedProducts'] ?? []);
+    }
+  }
 
   void _submitProduct() async {
     String name = _productnameController.text;
@@ -23,7 +42,7 @@ class _ProductEnterScreenState extends State<ProductEnterScreen> {
     int quantity = int.parse(_quantityController.text);
     String unit = _selectedUnit;
     List<String> tags = _selectedTags;
-    List<String> products = _selectedProducts; // Include selected products
+    List<String> products = _selectedProducts;
     double price = double.parse(_priceController.text);
 
     // Save product to Firestore
@@ -34,7 +53,7 @@ class _ProductEnterScreenState extends State<ProductEnterScreen> {
       'unit': unit,
       'tags': tags,
       'price': price,
-      'linkedProducts': products, // Save selected products
+      'linkedProducts': products,
     });
 
     Navigator.pop(context);
@@ -43,7 +62,9 @@ class _ProductEnterScreenState extends State<ProductEnterScreen> {
   void _selectTags() async {
     final selectedTags = await Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => TagSelectionScreen(selectedTags: _selectedTags)),
+      MaterialPageRoute(
+          builder: (context) =>
+              TagSelectionScreen(selectedTags: _selectedTags)),
     );
     if (selectedTags != null) {
       setState(() {
@@ -53,13 +74,23 @@ class _ProductEnterScreenState extends State<ProductEnterScreen> {
   }
 
   void _selectProducts() async {
-    final selectedProducts = await Navigator.push(
+    final selectedProduct = await Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => ProductSelectionScreen(selectedProducts: _selectedProducts)),
+      MaterialPageRoute(
+          builder: (context) =>
+              ProductSelectionScreen(selectedProducts: _selectedProducts)),
     );
-    if (selectedProducts != null) {
+
+    if (selectedProduct != null) {
       setState(() {
-        _selectedProducts = selectedProducts;
+        _productnameController.text = selectedProduct['name'] ?? '';
+        _companyController.text = selectedProduct['company'] ?? '';
+        _quantityController.text = selectedProduct['quantity']?.toString() ?? '';
+        _priceController.text = selectedProduct['price']?.toString() ?? '';
+        _selectedUnit = selectedProduct['unit'] ?? 'kg';
+        _selectedTags = List<String>.from(selectedProduct['tags'] ?? []);
+        _selectedProducts = List<String>.from(
+            selectedProduct['linkedProducts'] ?? []);
       });
     }
   }
@@ -71,10 +102,11 @@ class _ProductEnterScreenState extends State<ProductEnterScreen> {
         title: Text('Enter Product', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
         backgroundColor: Colors.teal,
       ),
+
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Card(
-          elevation: 8,
+          elevation: 8.0,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
           ),
@@ -105,6 +137,8 @@ class _ProductEnterScreenState extends State<ProductEnterScreen> {
                     ),
                   ),
                 ),
+
+
                 SizedBox(height: 16),
                 TextField(
                   controller: _companyController,
@@ -119,6 +153,8 @@ class _ProductEnterScreenState extends State<ProductEnterScreen> {
                     ),
                   ),
                 ),
+
+
                 SizedBox(height: 16),
                 TextField(
                   controller: _quantityController,
@@ -134,6 +170,8 @@ class _ProductEnterScreenState extends State<ProductEnterScreen> {
                   ),
                   keyboardType: TextInputType.number,
                 ),
+
+
                 SizedBox(height: 16),
                 DropdownButtonFormField<String>(
                   value: _selectedUnit,
@@ -159,7 +197,8 @@ class _ProductEnterScreenState extends State<ProductEnterScreen> {
                     );
                   }).toList(),
                 ),
-                SizedBox(height: 16),
+
+
                 TextField(
                   controller: _priceController,
                   decoration: InputDecoration(
@@ -174,6 +213,8 @@ class _ProductEnterScreenState extends State<ProductEnterScreen> {
                   ),
                   keyboardType: TextInputType.numberWithOptions(decimal: true),
                 ),
+
+
                 SizedBox(height: 16),
                 ElevatedButton.icon(
                   onPressed: _selectTags,
@@ -203,6 +244,8 @@ class _ProductEnterScreenState extends State<ProductEnterScreen> {
                     )
                         .toList(),
                   ),
+
+
                 SizedBox(height: 16),
                 ElevatedButton.icon(
                   onPressed: _selectProducts,
@@ -232,10 +275,14 @@ class _ProductEnterScreenState extends State<ProductEnterScreen> {
                     )
                         .toList(),
                   ),
+
                 SizedBox(height: 16),
+
+
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
+
                     TextButton.icon(
                       onPressed: () {
                         Navigator.of(context).pop();
@@ -254,7 +301,8 @@ class _ProductEnterScreenState extends State<ProductEnterScreen> {
                       ),
                     ),
                   ],
-                ),
+                )
+
               ],
             ),
           ),

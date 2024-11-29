@@ -64,7 +64,7 @@ class HomeScreen extends StatelessWidget {
                     onTap: () async {
                       await Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => MarketsScreen()),
+                        MaterialPageRoute(builder: (context) => MarketListScreen()),
                       );
                     },
                   ),
@@ -161,7 +161,7 @@ class HomeScreen extends StatelessWidget {
                     onTap: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => MarketsScreen()),
+                        MaterialPageRoute(builder: (context) => MarketListScreen()),
                       );
                     },
                   ),

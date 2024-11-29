@@ -22,15 +22,19 @@ class _ProductSelectionScreenState extends State<ProductSelectionScreen> {
   }
 
   void _fetchProducts() async {
-    QuerySnapshot snapshot = await FirebaseFirestore.instance.collection('products').get();
+    QuerySnapshot snapshot =
+    await FirebaseFirestore.instance.collection('products').get();
     setState(() {
       _availableProducts = snapshot.docs.map((doc) {
-        return {
-          'id': doc.id,
-          ...doc.data() as Map<String, dynamic>, // Merging Firestore document data
-        };
+        var data = doc.data() as Map<String, dynamic>;
+        data['id'] = doc.id; // Add the document ID to the product data
+        return data;
       }).toList();
     });
+  }
+
+  void _selectProduct(Map<String, dynamic> product) {
+    Navigator.pop(context, product);
   }
 
   @override
@@ -49,16 +53,14 @@ class _ProductSelectionScreenState extends State<ProductSelectionScreen> {
                 itemCount: _availableProducts.length,
                 itemBuilder: (context, index) {
                   Map<String, dynamic> product = _availableProducts[index];
-                  String productId = product['id'];
-                  bool isSelected = _selectedProducts.contains(productId);
-
                   return Card(
                     elevation: 3,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: ListTile(
-                      contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                      contentPadding: EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 8),
                       title: Text(
                         product['name'] ?? 'Unnamed Product',
                         style: TextStyle(
@@ -73,45 +75,24 @@ class _ProductSelectionScreenState extends State<ProductSelectionScreen> {
                           Text('Price: \$${product['price'] ?? 'N/A'}'),
                           Text('Quantity: ${product['quantity'] ?? 'N/A'}'),
                           Text('Unit: ${product['unit'] ?? 'N/A'}'),
-                          if (product['tags'] != null && (product['tags'] as List).isNotEmpty)
+                          if (product['tags'] != null &&
+                              (product['tags'] as List).isNotEmpty)
                             Text('Tags: ${(product['tags'] as List).join(', ')}'),
                         ],
                       ),
                       leading: CircleAvatar(
-                        backgroundColor: isSelected ? Colors.teal : Colors.grey.shade300,
+                        backgroundColor: Colors.grey.shade300,
                         child: Icon(
-                          isSelected ? Icons.check : Icons.inventory,
-                          color: isSelected ? Colors.white : Colors.teal,
+                          Icons.inventory,
+                          color: Colors.teal,
                         ),
                       ),
                       onTap: () {
-                        setState(() {
-                          if (isSelected) {
-                            _selectedProducts.remove(productId);
-                          } else {
-                            _selectedProducts.add(productId);
-                          }
-                        });
+                        _selectProduct(product);
                       },
                     ),
                   );
                 },
-              ),
-            ),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.teal,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16.0),
-                ),
-                padding: EdgeInsets.symmetric(horizontal: 32, vertical: 12),
-              ),
-              onPressed: () {
-                Navigator.pop(context, _selectedProducts);
-              },
-              child: Text(
-                'Done',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
             ),
           ],
