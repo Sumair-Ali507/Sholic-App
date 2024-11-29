@@ -275,8 +275,8 @@ class _MarketDetailsScreenState extends State<MarketDetailsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Scaffold(
+    return Scaffold(
+        backgroundColor: Colors.white,
         appBar: AppBar(
           backgroundColor: Colors.teal,
           title: Text(
@@ -388,7 +388,7 @@ class _MarketDetailsScreenState extends State<MarketDetailsScreen> {
             ],
           ),
         ),
-      ),
+      
     );
   }
 }

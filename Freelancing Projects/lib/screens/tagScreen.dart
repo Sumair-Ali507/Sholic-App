@@ -56,8 +56,7 @@ class _TagSelectionScreenState extends State<TagSelectionScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Scaffold(
+    return  Scaffold(
         appBar: AppBar(
           title: Text('Select Tags'),
           backgroundColor: Colors.teal,
@@ -175,7 +174,7 @@ class _TagSelectionScreenState extends State<TagSelectionScreen> {
             ],
           ),
         ),
-      ),
+
     );
   }
 }
